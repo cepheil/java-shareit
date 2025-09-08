@@ -1,10 +1,10 @@
 package ru.practicum.shareit.item.mapper;
 
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.user.User;
+
 
 public class ItemMapper {
 
@@ -12,39 +12,44 @@ public class ItemMapper {
         if (item == null) {
             return null;
         }
-        ItemDto dto = new ItemDto();
-        dto.setId(item.getId());
-        dto.setName(item.getName());
-        dto.setDescription(item.getDescription());
-        dto.setAvailable(item.isAvailable());
-        dto.setOwnerId(item.getOwner().getId());
-
-        dto.setRequestId(item.getRequest() != null ? item.getRequest().getId() : null);
-        dto.setBookingCount(item.getBookingCount() !=null ? item.getBookingCount() : null);
-
-        return dto;
+        return new ItemDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getOwnerId(),
+                item.getAvailable(),
+                item.getRequestId()
+        );
     }
 
-    public static Item toItem (ItemDto itemDto, User owner, ItemRequest request) {
-        if (itemDto == null) {
-            return null;
-        }
-        if (owner == null) {
-            throw new ValidationException("Owner cannot be null for item creation");
-        }
-
+    public static Item toItem(ItemCreateDto dto, Long ownerId) {
         Item item = new Item();
-        item.setId(itemDto.getId());
-        item.setName(itemDto.getName());
-        item.setDescription(itemDto.getDescription());
-        item.setOwner(owner);
-        item.setAvailable(itemDto.getAvailable() != null ? itemDto.getAvailable() : false);
-        item.setRequest(request);
+        item.setName(dto.getName());
+        item.setDescription(dto.getDescription());
+        item.setAvailable(dto.getAvailable());
+        item.setRequestId(dto.getRequestId());
+        item.setOwnerId(ownerId);
 
         return item;
     }
 
-
+    public static void updateItem(Item item, ItemUpdateDto dto) {
+        if (dto == null) {
+            return;
+        }
+        if (dto.getName() != null) {
+            item.setName(dto.getName());
+        }
+        if (dto.getDescription() != null) {
+            item.setDescription(dto.getDescription());
+        }
+        if (dto.getAvailable() != null) {
+            item.setAvailable(dto.getAvailable());
+        }
+        if (dto.getRequestId() != null) {
+            item.setRequestId(dto.getRequestId());
+        }
+    }
 
 
 }

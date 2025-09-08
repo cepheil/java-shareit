@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.User;
@@ -27,7 +28,7 @@ public class UserServiceImpl implements UserService {
         User user = UserMapper.toUser(userCreateDto);
         if (userRepository.existsByEmail(user.getEmail())) {
             log.error("Email уже используется: {}", user.getEmail());
-            throw new ValidationException("Email уже используется: " + user.getEmail());
+            throw new ConflictException("Email уже используется: " + user.getEmail());
         }
 
         User created = userRepository.create(user);
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
             userRepository.existsByEmail(userUpdateDto.getEmail()) &&
             !userUpdateDto.getEmail().equals(user.getEmail())) {
             log.error("Email уже используется: {}", userUpdateDto.getEmail());
-            throw new ValidationException("Email уже используется: " + userUpdateDto.getEmail());
+            throw new ConflictException("Email уже используется: " + userUpdateDto.getEmail());
         }
 
         UserMapper.updateUser(user, userUpdateDto);
