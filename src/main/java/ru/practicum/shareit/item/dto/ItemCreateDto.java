@@ -1,4 +1,5 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.item.dto;
+
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -6,21 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
-    private Long id;
+public class ItemCreateDto {
+
     @NotBlank(message = "Название предмета не может быть пустым")
     private String name;
     @NotBlank(message = "Описание предмета не может быть пустым")
     private String description;
-    @NotNull(message = "Владелец обязателен")
-    private Long ownerId;
     @NotNull(message = "Статус доступности обязателен")
     private Boolean available;
+
     private Long requestId;
-    //private Integer bookingCount;
 
 }
