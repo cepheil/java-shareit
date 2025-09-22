@@ -11,7 +11,7 @@ public interface ItemService {
 
     ItemDto createItem(Long ownerId, ItemCreateDto itemCreateDto);
 
-    ItemDto updateItem(Long ownerId,Long itemId, ItemUpdateDto itemUpdateDto);
+    ItemDto updateItem(Long ownerId, Long itemId, ItemUpdateDto itemUpdateDto);
 
     ItemDto getItemById(Long userId, Long itemId);
 
@@ -19,6 +19,6 @@ public interface ItemService {
 
     Collection<ItemDto> searchItems(String text);
 
-    void deleteItem(Long ownerId,Long itemId);
+    void deleteItem(Long ownerId, Long itemId);
 
 }

@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -12,6 +13,9 @@ import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
@@ -20,41 +24,60 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
 
     @Override
+    @Transactional
     public ItemDto createItem(Long ownerId, ItemCreateDto itemCreateDto) {
         if (ownerId == null) {
             throw new ValidationException("ID владельца не может быть null");
         }
-        if (!userRepository.existsById(ownerId)) {
-            throw new NotFoundException("Владелец ID=" + ownerId + " не найден");
+
+        User owner = userRepository.findById(ownerId)
+                .orElseThrow(() -> new NotFoundException("Владелец ID=" + ownerId + " не найден"));
+
+        ItemRequest request = null;
+        if (itemCreateDto.getRequestId() != null) {
+            request = itemRequestRepository.findById(itemCreateDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("Запрос ID=" + itemCreateDto.getRequestId() + " не найден"));
         }
-        Item item = ItemMapper.toItem(itemCreateDto, ownerId);
-        Item created = itemRepository.create(item);
+
+        Item item = ItemMapper.toItem(itemCreateDto, owner, request);
+        Item created = itemRepository.save(item);
         log.info("Пользователем ID={},  создана новая вещь ID={}", ownerId, created.getId());
         return ItemMapper.toItemDto(created);
     }
 
 
     @Override
+    @Transactional
     public ItemDto updateItem(Long ownerId, Long itemId, ItemUpdateDto itemUpdateDto) {
         if (ownerId == null || itemId == null) {
             log.error("Попытка обновления с некорректными ID (ownerId={}, itemId={})", ownerId, itemId);
             throw new ValidationException("ID владельца и ID вещи не могут быть null");
         }
+
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("вещь с ID=" + itemId + " не найдена"));
 
-        if (!item.getOwnerId().equals(ownerId)) {
+        ItemRequest request = null;
+        if (itemUpdateDto.getRequestId() != null) {
+            request = itemRequestRepository.findById(itemUpdateDto.getRequestId())
+                    .orElseThrow(() -> new NotFoundException("Запрос ID=" + itemUpdateDto.getRequestId() + " не найден"));
+        }
+
+        if (!item.getOwner().getId().equals(ownerId)) {
             log.error("Пользователь ID={} попытался обновить чужую вещь ID={}", ownerId, itemId);
             throw new ForbiddenException("Редактировать вещь может только её владелец");
         }
-        ItemMapper.updateItem(item, itemUpdateDto);
-        Item updated = itemRepository.update(item);
+
+        ItemMapper.updateItem(item, itemUpdateDto, request);
+        Item updated = itemRepository.save(item);
         log.info("Пользователь ID={} обновил вещь ID={}", ownerId, updated.getId());
         return ItemMapper.toItemDto(updated);
     }
@@ -70,9 +93,11 @@ public class ItemServiceImpl implements ItemService {
             log.error("ID пользователя не может быть null, запрос отклонён");
             throw new ValidationException("ID пользователя не может быть null");
         }
+
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("вещь с ID=" + itemId + " не найдена"));
 
+        //
         log.info("Пользователь ID={} запросил вещь ID={}", userId, itemId);
         return ItemMapper.toItemDto(item);
     }
@@ -115,6 +140,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
+    @Transactional
     public void deleteItem(Long ownerId, Long itemId) {
         if (ownerId == null || itemId == null) {
             log.error("Попытка удаления с некорректными ID (ownerId={}, itemId={})", ownerId, itemId);
@@ -124,12 +150,12 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь ID=" + itemId + " не найдена"));
 
-        if (!item.getOwnerId().equals(ownerId)) {
+        if (!item.getOwner().getId().equals(ownerId)) {
             log.error("Пользователь ID={} попытался удалить чужую вещь ID={}", ownerId, itemId);
             throw new ValidationException("Удалить вещь может только её владелец");
         }
 
-        itemRepository.delete(itemId);
+        itemRepository.deleteById(itemId);
         log.info("Пользователь ID={} удалил вещь ID={}", ownerId, itemId);
     }
 }

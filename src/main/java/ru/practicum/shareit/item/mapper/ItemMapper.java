@@ -6,6 +6,8 @@ import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
@@ -14,29 +16,37 @@ public class ItemMapper {
         if (item == null) {
             return null;
         }
+
+        Long ownerId = item.getOwner() != null ? item.getOwner().getId() : null;
+        Long requestId = item.getRequest() != null ? item.getRequest().getId() : null;
+
         return new ItemDto(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),
-                item.getOwnerId(),
+                ownerId,
                 item.getAvailable(),
-                item.getRequestId()
+                requestId
         );
     }
 
-    public static Item toItem(ItemCreateDto dto, Long ownerId) {
+    public static Item toItem(ItemCreateDto dto, User owner, ItemRequest request) {
+        if (dto == null) {
+            return null;
+        }
+
         Item item = new Item();
         item.setName(dto.getName());
         item.setDescription(dto.getDescription());
         item.setAvailable(dto.getAvailable());
-        item.setRequestId(dto.getRequestId());
-        item.setOwnerId(ownerId);
+        item.setRequest(request);
+        item.setOwner(owner);
 
         return item;
     }
 
-    public static void updateItem(Item item, ItemUpdateDto dto) {
-        if (dto == null) {
+    public static void updateItem(Item item, ItemUpdateDto dto, ItemRequest request) {
+        if (item == null || dto == null) {
             return;
         }
         if (dto.getName() != null) {
@@ -49,7 +59,7 @@ public class ItemMapper {
             item.setAvailable(dto.getAvailable());
         }
         if (dto.getRequestId() != null) {
-            item.setRequestId(dto.getRequestId());
+            item.setRequest(request);
         }
     }
 

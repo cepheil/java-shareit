@@ -14,5 +14,4 @@ public class ItemDto {
     private Long ownerId;
     private Boolean available;
     private Long requestId;
-    //private Integer bookingCount;
 }
