@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import ru.practicum.shareit.item.model.Item;
@@ -20,7 +21,7 @@ public class Booking {
 
     @Column(name = "start_date", nullable = false)
     @NotNull(message = "Дата начала бронирования обязательна")
-    @Future(message = "Дата начала должна быть в будущем")
+    @FutureOrPresent(message = "Дата начала не может быть в прошлом")
     private LocalDateTime start;
 
     @Column(name = "end_date", nullable = false)

@@ -8,7 +8,6 @@ import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.User;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemRequestMapper {
 
-    public static ItemRequestDto toItemRequestDto (ItemRequest request, List<ItemDto> items) {
+    public static ItemRequestDto toItemRequestDto(ItemRequest request, List<ItemDto> items) {
         if (request == null) {
             return null;
         }

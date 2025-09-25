@@ -5,8 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.booking.dto.BookingCreateDto;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
@@ -17,20 +16,36 @@ public class BookingMapper {
         if (booking == null) {
             return null;
         }
-        Long bookerId = booking.getBooker() != null ? booking.getBooker().getId() : null;
-        Long itemId = booking.getItem() != null ? booking.getItem().getId() : null;
+        BookerDto bookerDto = booking.getBooker() != null
+                ? new BookerDto(booking.getBooker().getId())
+                : null;
+
+        ItemShortDto itemShortDto = booking.getItem() != null
+                ? new ItemShortDto(booking.getItem().getId(), booking.getItem().getName())
+                : null;
 
         return new BookingDto(
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
                 booking.getStatus(),
-                bookerId,
-                itemId
+                bookerDto,
+                itemShortDto
         );
     }
 
-    public static Booking toBooking (BookingCreateDto dto, Item item, User booker) {
+    public static BookingShortDto toBookingShortDto(Booking booking) {
+        if (booking == null) {
+            return null;
+        }
+        return new BookingShortDto(
+                booking.getId(),
+                booking.getBooker() != null ? booking.getBooker().getId() : null
+        );
+    }
+
+
+    public static Booking toBooking(BookingCreateDto dto, Item item, User booker) {
         if (dto == null) {
             return null;
         }
@@ -40,7 +55,6 @@ public class BookingMapper {
         booking.setItem(item);
         booking.setBooker(booker);
         booking.setStatus(Status.WAITING);
-
         return booking;
     }
 

@@ -21,7 +21,6 @@ public class UserMapper {
         );
     }
 
-
     public static User toUser(UserCreateDto userDto) {
         if (userDto == null) {
             return null;

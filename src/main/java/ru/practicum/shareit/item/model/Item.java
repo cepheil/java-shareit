@@ -20,7 +20,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 256, nullable = false)
+    @Column(name = "name", length = 255, nullable = false)
     @NotBlank(message = "Название предмета не может быть пустым")
     private String name;
 

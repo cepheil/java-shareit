@@ -86,9 +86,6 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("ID владельца и ID бронирования не может быть null");
         }
 
-        User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new NotFoundException("Владелец ID=" + ownerId + " не найден"));
-
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование ID=" + bookingId + " не найдено"));
 

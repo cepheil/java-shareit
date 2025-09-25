@@ -13,7 +13,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 256, nullable = false)
+    @Column(name = "name", length = 255, nullable = false)
     @NotNull(message = "Имя не может быть пустым")
     private String name;
 

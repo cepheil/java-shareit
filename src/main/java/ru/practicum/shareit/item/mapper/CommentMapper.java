@@ -28,7 +28,6 @@ public class CommentMapper {
         );
     }
 
-
     public static Comment toComment(CommentCreateDto dto, Item item, User author) {
         if (dto == null) {
             return null;
