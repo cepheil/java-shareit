@@ -14,9 +14,12 @@ public class UserMapper {
         if (user == null) {
             return null;
         }
-        return new UserDto(user.getId(), user.getName(), user.getEmail());
+        return new UserDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
     }
-
 
     public static User toUser(UserCreateDto userDto) {
         if (userDto == null) {
@@ -38,8 +41,6 @@ public class UserMapper {
         if (dto.getEmail() != null) {
             user.setEmail(dto.getEmail());
         }
-
-
     }
 
 }

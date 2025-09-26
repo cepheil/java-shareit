@@ -9,11 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemUpdateDto {
-    @Size(min = 1, max = 255, message = "Название не может быть пустым")
+    @Size(min = 1, max = 255, message = "Название должно содержать хотя бы 1 символ и не быть длиннее 255")
     private String name;
-    @Size(min = 1, max = 500, message = "Описание не может быть пустым")
+
+    @Size(min = 1, max = 512, message = "Описание должно содержать хотя бы 1 символ и не быть длиннее 512")
     private String description;
+
     private Boolean available;
+
     private Long requestId;
 
 }

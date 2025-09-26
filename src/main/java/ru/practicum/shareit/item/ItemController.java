@@ -6,9 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemCreateDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemUpdateDto;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.service.CommentService;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.Collection;
@@ -20,6 +19,8 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
+    private final CommentService commentService;
+
 
     @PostMapping
     public ItemDto createItem(
@@ -41,7 +42,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(
+    public ItemWithBookingsDto getItemById(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable @Positive Long itemId
     ) {
@@ -50,7 +51,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> getAllItemsByOwner(
+    public Collection<ItemWithBookingsDto> getAllItemsByOwner(
             @RequestHeader("X-Sharer-User-Id") Long ownerId) {
         log.info("GET /items - получение списка вещей владельца ID={}", ownerId);
         return itemService.getAllItemsByOwner(ownerId);
@@ -71,6 +72,17 @@ public class ItemController {
     ) {
         log.info("DELETE /items/{} - запрос на удаление вещи пользователем ID={}", itemId, ownerId);
         itemService.deleteItem(ownerId, itemId);
+    }
+
+    //POST /items/{itemId}/comment
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(
+            @PathVariable @Positive Long itemId,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
+            @Valid @RequestBody CommentCreateDto dto
+    ) {
+        log.info("POST /items/{itemId}/comment - добавление комментария к вещи ID={} пользователем ID={}", itemId, userId);
+        return commentService.createComment(userId, itemId, dto);
     }
 
 
