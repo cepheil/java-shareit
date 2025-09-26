@@ -4,19 +4,25 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
-@Data
+
 @Entity
 @Table(name = "bookings")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "start_date", nullable = false)
@@ -45,5 +51,10 @@ public class Booking {
     @Column(name = "status", nullable = false, length = 50)
     @NotNull(message = "Статус обязателен")
     private Status status;
+
+    @Override
+    public String toString() {
+        return "Booking(id=" + id + ", status=" + status + ")";
+    }
 
 }

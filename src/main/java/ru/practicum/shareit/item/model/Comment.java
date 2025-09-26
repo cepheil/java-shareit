@@ -3,18 +3,24 @@ package ru.practicum.shareit.item.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
-@Data
+
 @Entity
 @Table(name = "comments")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "text", nullable = false, length = 1024)
@@ -36,5 +42,11 @@ public class Comment {
     @JoinColumn(name = "author_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_comment_author"))
     private User author;
+
+
+    @Override
+    public String toString() {
+        return "Comment(id=" + id + ", text=" + text + ")";
+    }
 
 }

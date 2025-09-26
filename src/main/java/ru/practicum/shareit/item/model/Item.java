@@ -3,21 +3,23 @@ package ru.practicum.shareit.item.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 
-@Data
+
 @Entity
+@Table(name = "items")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "items")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "name", length = 255, nullable = false)
@@ -43,5 +45,9 @@ public class Item {
             foreignKey = @ForeignKey(name = "fk_item_request"))
     private ItemRequest request;
 
+    @Override
+    public String toString() {
+        return "Item(id=" + id + ", name=" + name + ")";
+    }
 
 }

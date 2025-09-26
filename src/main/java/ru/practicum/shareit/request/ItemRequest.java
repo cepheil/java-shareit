@@ -4,19 +4,24 @@ package ru.practicum.shareit.request;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
 
-@Data
 @Entity
 @Table(name = "requests")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ItemRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "description", nullable = false, length = 512)
@@ -32,5 +37,10 @@ public class ItemRequest {
     @Column(name = "created", nullable = false)
     @NotNull(message = "Дата запроса обязательна")
     private LocalDateTime created;
+
+    @Override
+    public String toString() {
+        return "ItemRequest(id=" + id + ", description=" + description + ")";
+    }
 
 }
