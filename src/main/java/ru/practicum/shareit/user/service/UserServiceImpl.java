@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -19,23 +20,27 @@ import java.util.Collection;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
 
     @Override
+    @Transactional
     public UserDto createUser(UserCreateDto userCreateDto) {
         User user = UserMapper.toUser(userCreateDto);
+
         if (userRepository.existsByEmail(user.getEmail())) {
             log.error("Email уже используется: {}", user.getEmail());
             throw new ConflictException("Email уже используется: " + user.getEmail());
         }
 
-        User created = userRepository.create(user);
+        User created = userRepository.save(user);
         log.info("Создан новый пользователь ID={} email={}", created.getId(), created.getEmail());
 
         return UserMapper.toUserDto(created);
     }
+
 
     @Override
     public Collection<UserDto> getAllUsers() {
@@ -44,6 +49,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserMapper::toUserDto)
                 .toList();
     }
+
 
     @Override
     public UserDto getUserById(Long userId) {
@@ -59,6 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         if (userId == null) {
             log.error("Удаление пользователя с null-ID отклонён");
@@ -68,11 +75,12 @@ public class UserServiceImpl implements UserService {
             log.warn("Пользователь с ID={} не найден при попытке удаления", userId);
             throw new NotFoundException("Пользователь с ID=" + userId + " не найден");
         }
-        userRepository.delete(userId);
+        userRepository.deleteById(userId);
         log.info("Удалён пользователь ID={}", userId);
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(Long userId, UserUpdateDto userUpdateDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь ID=" + userId + " не найден"));
@@ -85,7 +93,7 @@ public class UserServiceImpl implements UserService {
         }
 
         UserMapper.updateUser(user, userUpdateDto);
-        User updated = userRepository.update(user);
+        User updated = userRepository.save(user);
         log.info("Обновлён пользователь ID={}", updated.getId());
 
         return UserMapper.toUserDto(updated);

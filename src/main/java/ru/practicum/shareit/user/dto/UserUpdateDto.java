@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 public class UserUpdateDto {
     @Size(min = 1, max = 255, message = "Имя должно содержать хотя бы 1 символ")
     private String name;
+
     @Email(message = "Некорректный формат email")
+    @Size(max = 512, message = "Email не может быть длиннее 512 символов")
     private String email;
 }
