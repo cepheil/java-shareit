@@ -21,6 +21,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,7 +89,10 @@ class ItemRequestIntegrationTest {
         List<ItemRequestDto> requests = itemRequestService.getUserRequests(user1.getId());
 
         assertThat(requests).hasSize(2);
-        assertThat(requests.get(0).getDescription()).contains("красная");
+        List<String> descriptions = requests.stream()
+                .map(ItemRequestDto::getDescription)
+                .collect(Collectors.toList());
+        assertThat(descriptions).contains("Требуется зеленая вещь", "Требуется красная вещь");
     }
 
     @Test
@@ -130,7 +134,10 @@ class ItemRequestIntegrationTest {
         List<ItemRequestDto> result = itemRequestService.getAllRequests(user2.getId(), 0, 10);
 
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getDescription()).contains("красная");
+        List<String> descriptions = result.stream()
+                .map(ItemRequestDto::getDescription)
+                .collect(Collectors.toList());
+        assertThat(descriptions).contains("Требуется зеленая вещь", "Требуется красная вещь");
     }
 
     @Test

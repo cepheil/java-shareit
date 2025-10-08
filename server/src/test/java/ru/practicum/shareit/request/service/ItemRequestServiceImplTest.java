@@ -99,6 +99,7 @@ class ItemRequestServiceImplTest {
         assertThat(result.get(0).getDescription()).contains("тестовая");
     }
 
+
     @Test
     @DisplayName("getUserRequests — ошибка при userId = null")
     void getUserRequests_shouldThrowWhenNullId() {
@@ -118,6 +119,20 @@ class ItemRequestServiceImplTest {
         assertThat(result.getId()).isEqualTo(1L);
     }
 
+
+    @Test
+    @DisplayName("getUserRequests — возвращает пустой список, если у пользователя нет запросов")
+    void getUserRequests_shouldReturnEmptyListWhenNoRequests() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(requestRepository.findByRequesterIdOrderByCreatedDesc(1L)).thenReturn(List.of());
+
+        List<ItemRequestDto> result = itemRequestService.getUserRequests(1L);
+
+        assertThat(result).isEmpty();
+        verify(itemRepository, never()).findByRequestIdIn(anyList());
+    }
+
+
     @Test
     @DisplayName("getRequestById — ошибка если запрос не найден")
     void getRequestById_shouldThrowWhenNotFound() {
@@ -126,6 +141,16 @@ class ItemRequestServiceImplTest {
 
         assertThrows(NotFoundException.class,
                 () -> itemRequestService.getRequestById(1L, 1L));
+    }
+
+
+    @Test
+    @DisplayName("getRequestById — ошибка при userId или requestId = null")
+    void getRequestById_shouldThrowWhenIdsAreNull() {
+        assertThrows(ValidationException.class,
+                () -> itemRequestService.getRequestById(null, 1L));
+        assertThrows(ValidationException.class,
+                () -> itemRequestService.getRequestById(1L, null));
     }
 
 
@@ -141,6 +166,15 @@ class ItemRequestServiceImplTest {
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getDescription()).contains("тестовая");
     }
+
+
+    @Test
+    @DisplayName("getAllRequests — ошибка при userId = null")
+    void getAllRequests_shouldThrowWhenUserIdNull() {
+        assertThrows(ValidationException.class,
+                () -> itemRequestService.getAllRequests(null, 0, 10));
+    }
+
 
     @Test
     @DisplayName("getAllRequests — ошибка если userId не найден")
