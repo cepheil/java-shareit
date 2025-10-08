@@ -3,8 +3,6 @@ package ru.practicum.shareit.booking.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.*;
@@ -12,9 +10,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.booking.dto.BookerDto;
 import ru.practicum.shareit.booking.dto.ItemShortDto;
-
-
-
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
