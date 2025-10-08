@@ -53,7 +53,7 @@ class BookingDtoJsonTest {
     @Test
     @DisplayName("Десериализация JSON в BookingDto")
     void deserializeBookingDto() throws Exception {
-        // @formatter:off
+        // CHECKSTYLE:OFF
         String json = """
                 {
                   "id": 1,
@@ -64,7 +64,7 @@ class BookingDtoJsonTest {
                   "item": { "id": 3, "name": "test Item" }
                 }
                 """;
-        // @formatter:on
+        // CHECKSTYLE:ON
 
         BookingDto dto = bookingDtoTester.parseObject(json);
 
@@ -94,7 +94,7 @@ class BookingDtoJsonTest {
     @Test
     @DisplayName("Десериализация JSON в BookingCreateDto")
     void deserializeBookingCreateDto() throws Exception {
-        // @formatter:off
+        // CHECKSTYLE:OFF
         String json = """
                 {
                   "start": "2025-10-10T09:00:00",
@@ -102,7 +102,7 @@ class BookingDtoJsonTest {
                   "itemId": 15
                 }
                 """;
-        // @formatter:on
+        // CHECKSTYLE:ON
         BookingCreateDto dto = bookingCreateDtoTester.parseObject(json);
 
         assertThat(dto.getItemId()).isEqualTo(15);

@@ -31,7 +31,7 @@ public class UserDtoJsonTest {
     @Test
     @DisplayName("Проверка десериализации JSON в UserDto")
     void testDeserialize() throws Exception {
-        // @formatter:off
+        // CHECKSTYLE:OFF
         String content = """
                 {
                   "id": 1,
@@ -39,7 +39,7 @@ public class UserDtoJsonTest {
                   "email": "ivan@mail.ru"
                 }
                 """;
-        // @formatter:on
+        // CHECKSTYLE:ON
         UserDto dto = json.parseObject(content);
 
         assertThat(dto.getId()).isEqualTo(1L);
