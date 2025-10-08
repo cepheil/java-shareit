@@ -9,9 +9,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
-import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
 
 import java.util.Map;
@@ -35,21 +33,21 @@ public class BookingClient extends BaseClient {
         return post("", userId, dto);
     }
 
-    public ResponseEntity<Object> updateBooking(Long ownerId, Long bookingId, boolean approved){
+    public ResponseEntity<Object> updateBooking(Long ownerId, Long bookingId, boolean approved) {
         Map<String, Object> params = Map.of("approved", approved);
         return patch("/" + bookingId + "?approved={approved}", ownerId, params, null);
     }
 
-    public ResponseEntity<Object> getBookingById(Long userId, Long bookingId){
+    public ResponseEntity<Object> getBookingById(Long userId, Long bookingId) {
         return get("/" + bookingId, userId);
     }
 
-    public ResponseEntity<Object> getUserBookings(Long userId, String state){
+    public ResponseEntity<Object> getUserBookings(Long userId, String state) {
         Map<String, Object> params = Map.of("state", state);
         return get("?state={state}", userId, params);
     }
 
-    public ResponseEntity<Object> getOwnerBookings(Long ownerId, String state){
+    public ResponseEntity<Object> getOwnerBookings(Long ownerId, String state) {
         Map<String, Object> params = Map.of("state", state);
         return get("/owner?state={state}", ownerId, params);
     }
