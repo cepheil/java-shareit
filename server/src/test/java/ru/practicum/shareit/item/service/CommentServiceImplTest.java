@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentCreateDto;
@@ -54,12 +55,12 @@ class CommentServiceImplTest {
     }
 
     @Test
-    @DisplayName("createComment — бросает ValidationException при userId/itemId = null")
+    @DisplayName("createComment — бросает ConflictException при userId/itemId = null")
     void createComment_shouldThrow_whenIdsNull() {
         assertThatThrownBy(() -> commentService.createComment(null, 1L, new CommentCreateDto("text")))
-                .isInstanceOf(ValidationException.class);
+                .isInstanceOf(ConflictException.class);
         assertThatThrownBy(() -> commentService.createComment(1L, null, new CommentCreateDto("text")))
-                .isInstanceOf(ValidationException.class);
+                .isInstanceOf(ConflictException.class);
     }
 
     @Test
@@ -80,6 +81,7 @@ class CommentServiceImplTest {
                 .isInstanceOf(NotFoundException.class);
     }
 
+    // такой ответ требуют тесты Postman
     @Test
     @DisplayName("createComment — бросает ValidationException если нет завершённого бронирования")
     void createComment_shouldThrow_whenNoBooking() {
@@ -115,10 +117,10 @@ class CommentServiceImplTest {
 
 
     @Test
-    @DisplayName("getCommentsByItem — бросает ValidationException при itemId = null")
+    @DisplayName("getCommentsByItem — бросает ConflictException при itemId = null")
     void getCommentsByItem_shouldThrow_whenIdNull() {
         assertThatThrownBy(() -> commentService.getCommentsByItem(null))
-                .isInstanceOf(ValidationException.class);
+                .isInstanceOf(ConflictException.class);
     }
 
     @Test

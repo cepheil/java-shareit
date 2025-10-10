@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -97,13 +98,13 @@ class BookingServiceImplTest {
     }
 
     @Test
-    @DisplayName("createBooking — бросает ValidationException, если start в прошлом")
+    @DisplayName("createBooking — бросает ConflictException, если start в прошлом")
     void createBooking_shouldThrow_whenStartInPast() {
         LocalDateTime now = LocalDateTime.now();
         BookingCreateDto dto = new BookingCreateDto(now.minusDays(1), now.plusDays(1), 1L);
 
         assertThatThrownBy(() -> bookingService.createBooking(1L, dto))
-                .isInstanceOf(ValidationException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("в прошлом");
     }
 
@@ -137,20 +138,20 @@ class BookingServiceImplTest {
     }
 
     @Test
-    @DisplayName("createBooking — бросает ValidationException, если userId = null")
+    @DisplayName("createBooking — бросает ConflictException, если userId = null")
     void createBooking_shouldThrow_whenUserIdNull() {
         BookingCreateDto dto = new BookingCreateDto(start, end, 1L);
         assertThatThrownBy(() -> bookingService.createBooking(null, dto))
-                .isInstanceOf(ValidationException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("ID пользователя не может быть null");
     }
 
     @Test
-    @DisplayName("createBooking — бросает ValidationException, если start или end null")
+    @DisplayName("createBooking — бросает ConflictException, если start или end null")
     void createBooking_shouldThrow_whenDatesNull() {
         BookingCreateDto dto = new BookingCreateDto(null, null, 1L);
         assertThatThrownBy(() -> bookingService.createBooking(1L, dto))
-                .isInstanceOf(ValidationException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("Дата начала и окончания обязательны");
     }
 
@@ -179,21 +180,21 @@ class BookingServiceImplTest {
     }
 
     @Test
-    @DisplayName("updateBooking — бросает ValidationException, если уже APPROVED")
+    @DisplayName("updateBooking — бросает ConflictException, если уже APPROVED")
     void updateBooking_shouldThrow_whenAlreadyApproved() {
         booking.setStatus(Status.APPROVED);
         when(bookingRepository.findById(booking.getId())).thenReturn(Optional.of(booking));
 
         assertThatThrownBy(() -> bookingService.updateBooking(owner.getId(), booking.getId(), true))
-                .isInstanceOf(ValidationException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("уже подтверждено");
     }
 
     @Test
-    @DisplayName("updateBooking — бросает ValidationException, если ownerId или bookingId null")
+    @DisplayName("updateBooking — бросает ConflictException, если ownerId или bookingId null")
     void updateBooking_shouldThrow_whenIdsNull() {
         assertThatThrownBy(() -> bookingService.updateBooking(null, 1L, true))
-                .isInstanceOf(ValidationException.class)
+                .isInstanceOf(ConflictException.class)
                 .hasMessageContaining("ID владельца и ID бронирования");
     }
 

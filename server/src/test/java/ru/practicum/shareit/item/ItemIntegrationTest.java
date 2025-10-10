@@ -8,9 +8,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
-//@ActiveProfiles("test")
 @AutoConfigureTestDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ItemIntegrationTest {
@@ -191,7 +190,7 @@ class ItemIntegrationTest {
     @Test
     @DisplayName("Удаление вещи — ошибка если ID = null")
     void deleteItem_shouldThrowValidationWhenIdNull() {
-        assertThrows(ValidationException.class, () ->
+        assertThrows(ConflictException.class, () ->
                 itemService.deleteItem(owner.getId(), null));
     }
 }

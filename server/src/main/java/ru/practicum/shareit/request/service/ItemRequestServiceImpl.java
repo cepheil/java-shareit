@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -34,13 +34,12 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
 
 
-
     @Override
     @Transactional
     public ItemRequestDto createRequest(Long userId, ItemRequestCreateDto dto) {
         if (userId == null) {
             log.error("ID пользователя не может быть null");
-            throw new ValidationException("ID пользователя не может быть null");
+            throw new ConflictException("ID пользователя не может быть null");
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователя ID=" + userId + " не найден"));
@@ -57,7 +56,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDto> getUserRequests(Long userId) {
         if (userId == null) {
             log.error("ID пользователя не может быть null");
-            throw new ValidationException("ID пользователя не может быть null");
+            throw new ConflictException("ID пользователя не может быть null");
         }
 
         User user = userRepository.findById(userId)
@@ -92,7 +91,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto getRequestById(Long userId, Long requestId) {
         if (userId == null || requestId == null) {
             log.error("ID пользователя={} или ID запроса={} не может быть null", userId, requestId);
-            throw new ValidationException("ID пользователя и ID запроса не могут быть null");
+            throw new ConflictException("ID пользователя и ID запроса не могут быть null");
         }
 
         userRepository.findById(userId)
@@ -115,7 +114,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDto> getAllRequests(Long userId, int from, int size) {
         if (userId == null) {
             log.error("ID пользователя не может быть null");
-            throw new ValidationException("ID пользователя не может быть null");
+            throw new ConflictException("ID пользователя не может быть null");
         }
 
         User user = userRepository.findById(userId)

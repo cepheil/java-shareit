@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -56,7 +55,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(Long userId) {
         if (userId == null) {
             log.error("Запрос пользователя с null-ID отклонён");
-            throw new ValidationException("ID пользователя не может быть null");
+            throw new ConflictException("ID пользователя не может быть null");
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователя с ID=" + userId + " не найден"));
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
         if (userId == null) {
             log.error("Удаление пользователя с null-ID отклонён");
-            throw new ValidationException("ID пользователя не может быть null");
+            throw new ConflictException("ID пользователя не может быть null");
         }
         if (!userRepository.existsById(userId)) {
             log.warn("Пользователь с ID={} не найден при попытке удаления", userId);

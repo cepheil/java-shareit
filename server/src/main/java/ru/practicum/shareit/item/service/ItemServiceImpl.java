@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
@@ -41,14 +41,13 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRequestRepository itemRequestRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
-    //private final ItemMapper itemMapper;
 
 
     @Override
     @Transactional
     public ItemDto createItem(Long ownerId, ItemCreateDto itemCreateDto) {
         if (ownerId == null) {
-            throw new ValidationException("ID владельца не может быть null");
+            throw new ConflictException("ID владельца не может быть null");
         }
 
         User owner = userRepository.findById(ownerId)
@@ -74,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(Long ownerId, Long itemId, ItemUpdateDto itemUpdateDto) {
         if (ownerId == null || itemId == null) {
             log.error("Попытка обновления с некорректными ID (ownerId={}, itemId={})", ownerId, itemId);
-            throw new ValidationException("ID владельца и ID вещи не могут быть null");
+            throw new ConflictException("ID владельца и ID вещи не могут быть null");
         }
 
         Item item = itemRepository.findById(itemId)
@@ -104,7 +103,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemWithBookingsDto getItemById(Long userId, Long itemId) {
         if (itemId == null || userId == null) {
             log.error("ID пользователя и ID вещи не могут быть null");
-            throw new ValidationException("ID пользователя и ID вещи не могут быть null");
+            throw new ConflictException("ID пользователя и ID вещи не могут быть null");
         }
 
         Item item = itemRepository.findById(itemId)
@@ -140,7 +139,7 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemWithBookingsDto> getAllItemsByOwner(Long ownerId) {
         if (ownerId == null) {
             log.error("ID владельца не может быть null, запрос отклонён");
-            throw new ValidationException("ID владельца не может быть null");
+            throw new ConflictException("ID владельца не может быть null");
         }
         if (!userRepository.existsById(ownerId)) {
             log.error("Владелец ID={}, не найден", ownerId);
@@ -219,7 +218,7 @@ public class ItemServiceImpl implements ItemService {
     public void deleteItem(Long ownerId, Long itemId) {
         if (ownerId == null || itemId == null) {
             log.error("Попытка удаления с некорректными ID (ownerId={}, itemId={})", ownerId, itemId);
-            throw new ValidationException("ID владельца и ID вещи не могут быть null");
+            throw new ConflictException("ID владельца и ID вещи не могут быть null");
         }
 
         Item item = itemRepository.findById(itemId)

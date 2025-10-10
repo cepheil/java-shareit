@@ -1,13 +1,10 @@
 package ru.practicum.shareit.exception;
 
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 
 class ErrorHandlerTest {
@@ -24,15 +21,6 @@ class ErrorHandlerTest {
         assertThat(response.getDescription()).contains("не найден");
     }
 
-    @Test
-    @DisplayName("Обрабатывает ValidationException (400)")
-    void handleValidationException() {
-        ValidationException ex = new ValidationException("Некорректные данные");
-        ErrorResponse response = handler.handlerValidationException(ex);
-
-        assertThat(response.getError()).isEqualTo("ValidationException");
-        assertThat(response.getDescription()).contains("Некорректные");
-    }
 
     @Test
     @DisplayName("Обрабатывает ForbiddenException (403)")
@@ -44,6 +32,7 @@ class ErrorHandlerTest {
         assertThat(response.getDescription()).contains("запрещён");
     }
 
+
     @Test
     @DisplayName("Обрабатывает ConflictException (409)")
     void handleConflictException() {
@@ -54,24 +43,6 @@ class ErrorHandlerTest {
         assertThat(response.getDescription()).contains("Конфликт");
     }
 
-    @Test
-    @DisplayName("Обрабатывает ConstraintViolationException (400)")
-    void handleConstraintViolationException() {
-        ConstraintViolationException ex = new ConstraintViolationException("Ошибка валидации", null);
-        ErrorResponse response = handler.handleConstraintViolationException(ex);
-
-        assertThat(response.getError()).isEqualTo("ConstraintViolationException");
-        assertThat(response.getDescription()).contains("валидации");
-    }
-
-    @Test
-    @DisplayName("Обрабатывает MethodArgumentNotValidException (400)")
-    void handleMethodArgumentNotValidException() throws Exception {
-        MethodArgumentNotValidException ex = mock(MethodArgumentNotValidException.class);
-        ErrorResponse response = handler.handlerMethodArgumentNotValidException(ex);
-
-        assertThat(response.getError()).isEqualTo("MethodArgumentNotValidException");
-    }
 
     @Test
     @DisplayName("Обрабатывает любые Exception (500)")

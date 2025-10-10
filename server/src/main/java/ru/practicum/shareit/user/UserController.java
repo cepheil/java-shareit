@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +22,7 @@ public class UserController {
 
 
     @PostMapping
-    public UserDto createUser(@Valid @RequestBody UserCreateDto userCreateDto) {
+    public UserDto createUser(@RequestBody UserCreateDto userCreateDto) {
         log.info("POST /users - запрос на создание нового пользователя {}", userCreateDto.getName());
         return userService.createUser(userCreateDto);
     }
@@ -35,20 +34,20 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getUserById(@PathVariable @Positive Long userId) {
+    public UserDto getUserById(@PathVariable Long userId) {
         log.info("GET /users/{userId} - запрос на получение пользователя c ID: {} ", userId);
         return userService.getUserById(userId);
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable @Positive Long userId) {
+    public void deleteUser(@PathVariable Long userId) {
         log.info("DELETE /users/{userId} - запрос на удаление пользователя c ID: {} ", userId);
         userService.deleteUser(userId);
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(
-            @PathVariable @Positive Long userId,
+            @PathVariable Long userId,
             @RequestBody UserUpdateDto userUpdateDto) {
         log.info("PАTCH /users/{userId} - запрос на обновление данных пользователя c ID: {} ", userId);
         return userService.updateUser(userId, userUpdateDto);

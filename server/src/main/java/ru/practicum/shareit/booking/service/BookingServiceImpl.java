@@ -10,6 +10,7 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -29,7 +30,6 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
-    //private final BookingMapper bookingMapper;
 
 
     @Override
@@ -37,12 +37,12 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto createBooking(Long userId, BookingCreateDto dto) {
         if (userId == null) {
             log.error("ID пользователя не может быть null");
-            throw new ValidationException("ID пользователя не может быть null");
+            throw new ConflictException("ID пользователя не может быть null");
         }
 
         if (dto.getStart() == null || dto.getEnd() == null) {
             log.error("Дата начала и окончания обязательны");
-            throw new ValidationException("Дата начала и окончания обязательны");
+            throw new ConflictException("Дата начала и окончания обязательны");
         }
 
         if (!dto.getStart().isBefore(dto.getEnd())) {
@@ -52,7 +52,7 @@ public class BookingServiceImpl implements BookingService {
 
         if (dto.getStart().isBefore(LocalDateTime.now())) {
             log.error("Дата начала не может быть в прошлом");
-            throw new ValidationException("Дата начала не может быть в прошлом");
+            throw new ConflictException("Дата начала не может быть в прошлом");
         }
 
         User booker = userRepository.findById(userId)
@@ -84,7 +84,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto updateBooking(Long ownerId, Long bookingId, boolean approved) {
         if (ownerId == null || bookingId == null) {
             log.error("ID владельца ={} и ID бронирования ={} не может быть null", ownerId, bookingId);
-            throw new ValidationException("ID владельца и ID бронирования не может быть null");
+            throw new ConflictException("ID владельца и ID бронирования не может быть null");
         }
 
         Booking booking = bookingRepository.findById(bookingId)
@@ -97,7 +97,7 @@ public class BookingServiceImpl implements BookingService {
 
         if (booking.getStatus() == Status.APPROVED) {
             log.warn("Бронирование уже имеет статус {} ", booking.getStatus());
-            throw new ValidationException("Бронирование уже подтверждено");
+            throw new ConflictException("Бронирование уже подтверждено");
         }
 
         if (approved) {
@@ -117,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto getBookingById(Long userId, Long bookingId) {
         if (userId == null || bookingId == null) {
             log.error("ID пользователя ={} и ID бронирования ={} не может быть null", userId, bookingId);
-            throw new ValidationException("ID пользователя и ID бронирования не может быть null");
+            throw new ConflictException("ID пользователя и ID бронирования не может быть null");
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователя ID=" + userId + " не найден"));
@@ -138,7 +138,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getUserBookings(Long userId, String state) {
         if (userId == null) {
             log.error("ID пользователя не может быть null");
-            throw new ValidationException("ID пользователя не может быть null");
+            throw new ConflictException("ID пользователя не может быть null");
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователя ID=" + userId + " не найден"));
@@ -177,7 +177,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getOwnerBookings(Long ownerId, String state) {
         if (ownerId == null) {
             log.error("ID владельца не может быть null");
-            throw new ValidationException("ID владельца не может быть null");
+            throw new ConflictException("ID владельца не может быть null");
         }
         userRepository.findById(ownerId)
                 .orElseThrow(() -> new NotFoundException("Пользователь ID=" + ownerId + " не найден"));

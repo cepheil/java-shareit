@@ -11,9 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
@@ -213,23 +213,23 @@ class ItemServiceImplTest {
 
 
     @Test
-    @DisplayName("createItem — ownerId == null выбрасывает ValidationException")
+    @DisplayName("createItem — ownerId == null выбрасывает ConflictException")
     void createItem_shouldThrowValidationWhenOwnerIdNull() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemService.createItem(null, new ItemCreateDto("x", "y", true, null)));
     }
 
     @Test
-    @DisplayName("getItemById — itemId == null выбрасывает ValidationException")
+    @DisplayName("getItemById — itemId == null выбрасывает ConflictException")
     void getItemById_shouldThrowValidationWhenIdNull() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemService.getItemById(1L, null));
     }
 
     @Test
-    @DisplayName("getAllItemsByOwner — ownerId == null выбрасывает ValidationException")
+    @DisplayName("getAllItemsByOwner — ownerId == null выбрасывает ConflictException")
     void getAllItemsByOwner_shouldThrowValidationWhenNull() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemService.getAllItemsByOwner(null));
     }
 

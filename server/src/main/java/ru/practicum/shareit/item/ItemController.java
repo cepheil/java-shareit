@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +24,7 @@ public class ItemController {
     @PostMapping
     public ItemDto createItem(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
-            @Valid @RequestBody ItemCreateDto itemCreateDto
+            @RequestBody ItemCreateDto itemCreateDto
     ) {
         log.info("POST /items - добавление новой вещи пользователем ID={}", ownerId);
         return itemService.createItem(ownerId, itemCreateDto);
@@ -34,7 +33,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
-            @PathVariable @Positive Long itemId,
+            @PathVariable Long itemId,
             @RequestBody ItemUpdateDto itemUpdateDto
     ) {
         log.info("PATCH /items/{} - обновление вещи пользователем ID={}", itemId, ownerId);
@@ -44,7 +43,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemWithBookingsDto getItemById(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @PathVariable @Positive Long itemId
+            @PathVariable Long itemId
     ) {
         log.info("GET /items/{} - просмотр вещи пользователем ID={}", itemId, userId);
         return itemService.getItemById(userId, itemId);
@@ -68,7 +67,7 @@ public class ItemController {
     @DeleteMapping("/{itemId}")
     public void deleteItem(
             @RequestHeader("X-Sharer-User-Id") Long ownerId,
-            @PathVariable @Positive Long itemId
+            @PathVariable Long itemId
     ) {
         log.info("DELETE /items/{} - запрос на удаление вещи пользователем ID={}", itemId, ownerId);
         itemService.deleteItem(ownerId, itemId);
@@ -77,9 +76,9 @@ public class ItemController {
     //POST /items/{itemId}/comment
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(
-            @PathVariable @Positive Long itemId,
+            @PathVariable Long itemId,
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @Valid @RequestBody CommentCreateDto dto
+            @RequestBody CommentCreateDto dto
     ) {
         log.info("POST /items/{itemId}/comment - добавление комментария к вещи ID={} пользователем ID={}", itemId, userId);
         return commentService.createComment(userId, itemId, dto);

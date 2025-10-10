@@ -12,6 +12,8 @@ import ru.practicum.shareit.item.dto.CommentCreateDto;
 import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.dto.ItemUpdateDto;
 
+import java.util.Collections;
+
 @Slf4j
 @Validated
 @RestController
@@ -59,6 +61,12 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<Object> searchItems(@RequestParam String text) {
         log.info("GET /items/search?text={} - поиск вещей", text);
+
+        if (text == null || text.isBlank()) {
+            log.info("Пустой поисковый запрос — возвращаем пустой список");
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+
         return itemClient.searchItems(text);
     }
 

@@ -8,8 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.ItemRequest;
@@ -71,7 +71,7 @@ class ItemRequestServiceImplTest {
     @Test
     @DisplayName("createRequest — ошибка при userId = null")
     void createRequest_shouldThrowWhenUserIdNull() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemRequestService.createRequest(null, new ItemRequestCreateDto("desc")));
     }
 
@@ -103,7 +103,7 @@ class ItemRequestServiceImplTest {
     @Test
     @DisplayName("getUserRequests — ошибка при userId = null")
     void getUserRequests_shouldThrowWhenNullId() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemRequestService.getUserRequests(null));
     }
 
@@ -147,9 +147,9 @@ class ItemRequestServiceImplTest {
     @Test
     @DisplayName("getRequestById — ошибка при userId или requestId = null")
     void getRequestById_shouldThrowWhenIdsAreNull() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemRequestService.getRequestById(null, 1L));
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemRequestService.getRequestById(1L, null));
     }
 
@@ -171,7 +171,7 @@ class ItemRequestServiceImplTest {
     @Test
     @DisplayName("getAllRequests — ошибка при userId = null")
     void getAllRequests_shouldThrowWhenUserIdNull() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemRequestService.getAllRequests(null, 0, 10));
     }
 

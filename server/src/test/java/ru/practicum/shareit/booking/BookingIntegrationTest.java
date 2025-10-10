@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -82,6 +83,7 @@ class BookingIntegrationTest {
                 () -> bookingService.createBooking(owner.getId(), dto));
     }
 
+    // 400 или 500 требуется ответ согласно тестам Postman
     @Test
     @DisplayName("Создание бронирования — ошибка: вещь недоступна")
     void createBooking_shouldThrowWhenItemUnavailable() {
@@ -146,7 +148,7 @@ class BookingIntegrationTest {
 
         bookingService.updateBooking(owner.getId(), created.getId(), true);
 
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> bookingService.updateBooking(owner.getId(), created.getId(), true));
     }
 

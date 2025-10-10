@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentCreateDto;
@@ -37,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDto createComment(Long userId, Long itemId, CommentCreateDto dto) {
         if (userId == null || itemId == null) {
             log.error("ID пользователя={} или ID вещи={} не может быть null", userId, itemId);
-            throw new ValidationException("ID пользователя и ID вещи не могут быть null");
+            throw new ConflictException("ID пользователя и ID вещи не могут быть null");
         }
 
         User author = userRepository.findById(userId)
@@ -67,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentDto> getCommentsByItem(Long itemId) {
         if (itemId == null) {
             log.error("ID вещи не может быть null");
-            throw new ValidationException("ID вещи не может быть null");
+            throw new ConflictException("ID вещи не может быть null");
         }
 
         List<Comment> comments = commentRepository.findByItemId(itemId);

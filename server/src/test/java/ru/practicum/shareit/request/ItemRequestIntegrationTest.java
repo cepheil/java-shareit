@@ -8,8 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
@@ -68,7 +68,7 @@ class ItemRequestIntegrationTest {
     @Test
     @DisplayName("Создание запроса — ошибка при userId = null")
     void createRequest_shouldThrowWhenUserIdNull() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemRequestService.createRequest(null, new ItemRequestCreateDto("test")));
     }
 
@@ -98,7 +98,7 @@ class ItemRequestIntegrationTest {
     @Test
     @DisplayName("getUserRequests — ошибка при null userId")
     void getUserRequests_shouldThrowWhenNullId() {
-        assertThrows(ValidationException.class,
+        assertThrows(ConflictException.class,
                 () -> itemRequestService.getUserRequests(null));
     }
 

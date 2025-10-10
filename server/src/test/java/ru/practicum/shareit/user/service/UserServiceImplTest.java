@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.service;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -104,9 +102,9 @@ class UserServiceImplTest {
 
 
     @Test
-    @DisplayName("Получение пользователя по ID — выбрасывает ValidationException, если ID null")
+    @DisplayName("Получение пользователя по ID — выбрасывает ConflictException, если ID null")
     void getUserById_shouldThrowValidationWhenIdIsNull() {
-        assertThrows(ValidationException.class, () -> userService.getUserById(null));
+        assertThrows(ConflictException.class, () -> userService.getUserById(null));
     }
 
 
@@ -130,9 +128,9 @@ class UserServiceImplTest {
     }
 
     @Test
-    @DisplayName("Удаление пользователя — выбрасывает ValidationException, если ID null")
+    @DisplayName("Удаление пользователя — выбрасывает ConflictException, если ID null")
     void deleteUser_shouldThrowValidationWhenIdIsNull() {
-        assertThrows(ValidationException.class, () -> userService.deleteUser(null));
+        assertThrows(ConflictException.class, () -> userService.deleteUser(null));
     }
 
 
@@ -183,8 +181,6 @@ class UserServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(NotFoundException.class, () -> userService.updateUser(1L, new UserUpdateDto("New", "new@example.com")));
     }
-
-
 
 
 }
